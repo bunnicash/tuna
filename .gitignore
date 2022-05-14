@@ -1,0 +1,12 @@
+# Folders
+/Archive/
+/Modules/
+/.vscode/
+
+# General
+*.txt
+*.log
+*-test.sh
+
+# Specific
+test.sh

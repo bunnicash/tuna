@@ -1,0 +1,5 @@
+#!/bin/bash
+## Copyright (C) 2022 bunnicash "@bunnicash" and licensed under GPL-2.0
+
+## Tuna Configuration
+wait_tuna="3"

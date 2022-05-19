@@ -1,18 +1,18 @@
 #!/bin/bash
 ## Copyright (C) 2022 bunnicash "@bunnicash" and licensed under GPL-2.0
-version="v1.0-020"
+version="v1.0-021"
+source ~/tuna/config.tuna
 
 # Upgrade -Syu, -Sya
 aur_upgrade () {
-  cd ~/AUR/$p && echo " " && echo -e "\e[93m==>\e[39m Old PKGBUILD for $p:" && echo " "
-  echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && sleep $wait_upgrade && echo " "
+  cd ~/AUR/$p && echo -e "\e[93m==>\e[39m Old PKGBUILD for $p:\n"
+  echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
   mv PKGBUILD ~/tuna && cd ~/AUR
-  rm -rf $p && git clone https://aur.archlinux.org/$p.git && cd ~/AUR/$p
-  echo " " && echo -e "\e[93m==>\e[39m New PKGBUILD for $p:" && echo " "
-  echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && sleep $wait_upgrade && echo " "
+  rm -rf $p && git clone https://aur.archlinux.org/$p.git && cd ~/AUR/$p && echo -e "\n\e[93m==>\e[39m New PKGBUILD for $p\n:"
+  echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
   makepkg -csir --noconfirm --skippgpcheck
-  echo " " && echo -e "\e[93m==>\e[39m Upgraded $p from version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' ~/tuna/PKGBUILD) to version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)"
-  rm -rf ~/tuna/PKGBUILD && cd ~/AUR  && sleep 2 && echo " " && echo -e "\e[92m===============================================================\e[39m"
+  echo -e "\n\e[93m==>\e[39m Upgraded $p from version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' ~/tuna/PKGBUILD) to version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)"
+  rm -rf ~/tuna/PKGBUILD && cd ~/AUR && echo -e "\n\e[92m===============================================================\e[39m\n"
 }
 
 # Tuna return
@@ -28,15 +28,13 @@ echo " "
 # -S (Install packages)
 if [ ${array_main[0]} == "-S" ]; then
   cd ~/AUR
-  read -p "==> Show PKGBUILD for [0-10] seconds? " wait_s
   for str in ${array_main[@]:1}; do
     if [ ${#str} -ge 2 ]; then
-      rm -rf $str && git clone https://aur.archlinux.org/$str.git && cd ~/AUR/$str
-      echo " " && echo -e "\e[93m==>\e[39m PKGBUILD for $str:" && echo " "
-      echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && sleep $wait_s && echo " "
+      rm -rf $str && git clone https://aur.archlinux.org/$str.git && cd ~/AUR/$str && echo -e "\n\e[93m==>\e[39m PKGBUILD for $str:\n"
+      echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
       makepkg -csir --noconfirm --skippgpcheck
-      echo " " && echo -e "\e[93m==>\e[39m Installed $str version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)" && sleep 2
-      cd ~/AUR && echo " " && echo -e "\e[92m===============================================================\e[39m" && echo " "
+      echo -e "\n\e[93m==>\e[39m Installed $str version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)"
+      cd ~/AUR && echo -e "\n\e[92m===============================================================\e[39m\n"
     fi
   done
   cd ~
@@ -46,7 +44,7 @@ elif [ ${array_main[0]} == "-Bu" ]; then
   cd ~
   today=$(date +"%d-%m-%Y")
   tar -zcvf aur-backup-$today.tar.gz ./AUR
-  echo " " && echo -e "\e[93m==>\e[39m Created tar.gz for local AUR repository backup" && echo " "
+  echo -e "\n\e[93m==>\e[39m Created tar.gz for local AUR repository backup\n"
 
 # -Br (Restore local AUR backup)
 elif [ ${array_main[0]} == "-Br" ]; then
@@ -55,8 +53,8 @@ elif [ ${array_main[0]} == "-Br" ]; then
     rm -rf ~/AUR
     tar -xvf ~/aur-backup-*.tar.gz
     rm -rf ~/aur-backup-*.tar.gz
-    echo " " && echo -e "\e[93m==>\e[39m Restored local backup, deleted leftover tar.gz"
-  else echo " " && echo -e "\e[93m==>\e[39m Backup .tar.gz not found, aborting..."
+    echo -e "\n\e[93m==>\e[39m Restored local backup, deleted leftover tar.gz"
+  else echo -e "\n\e[93m==>\e[39m Backup .tar.gz not found, aborting..."
   fi
   echo " " && cd ~
 
@@ -84,9 +82,7 @@ elif [ ${array_main[0]} == "-H" ]; then
 # -Syu (Sync and upgrade all repository/AUR packages)
 elif [ ${array_main[0]} == "-Syu" ]; then
   sudo pacman -Syu --noconfirm
-  echo " " && read -p "==> Show PKGBUILD for [0-10] seconds? " wait_upgrade
-  echo " " && cd ~/AUR && echo -ne "\e[93m==> AUR: \e[39m" && ls && sleep 2
-  ls > ~/tuna/pkg.txt
+  cd ~/AUR && ls > ~/tuna/pkg.txt
   while read p; do
     if [ ${#p} -ge 2 ]; then
       aur_upgrade
@@ -97,9 +93,7 @@ elif [ ${array_main[0]} == "-Syu" ]; then
 # -Sya (Sync and upgrade all AUR packages)
 elif [ ${array_main[0]} == "-Sya" ]; then
   sudo pacman -Sy --noconfirm
-  echo " " && read -p "==> Show PKGBUILD for [0-10] seconds? " wait_upgrade
-  echo " " && cd ~/AUR && echo -ne "\e[93m==> AUR: \e[39m" && ls && sleep 2
-  ls > ~/tuna/pkg.txt
+  cd ~/AUR && ls > ~/tuna/pkg.txt
   while read p; do
     if [ ${#p} -ge 2 ]; then
       aur_upgrade

@@ -1,6 +1,6 @@
 #!/bin/bash
-## GPL-2.0 - @bunnicash, 2022
-version="v1.0-019"
+## Copyright (C) 2022 bunnicash "@bunnicash" and licensed under GPL-2.0
+version="v1.0-020"
 
 # Upgrade -Syu, -Sya
 aur_upgrade () {
@@ -142,7 +142,7 @@ elif [ ${array_main[0]} == "-L" ]; then
     if [ ${#str} -ge 2 ]; then
       for l in ${array_look[@]}; do
         if [[ $(git ls-remote https://aur.archlinux.org/$str$l | wc -c) -ge 1 ]]; then
-          echo -e "\e[93m==>\e[39m Found package $str as $l version"
+          echo -e "\e[93m==>\e[39m Found package $str$l"
         fi
       done
     fi

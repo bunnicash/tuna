@@ -1,0 +1,12 @@
+todo: implement advanced aur dependency mgmt
+- issue:  due to the nature for the PKGBUILD file and how depenendecies can be listed,
+          a simple sed/grep text parsing won't work, e.g ('dep1' 'dep2'), (dep1 dep2)
+          (dep1>1.1.0 dep2) and so on: they might have ' or " or nothing, might have
+          > or < version specifiers...
+          
+- fix?:   implement python string formatter
+
+
+
+
+done: README changed for this feature

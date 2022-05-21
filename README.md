@@ -80,7 +80,7 @@ cd ~ && git clone https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *
 
 To use tuna:
 ```
-. tuna.sh
+tuna
 ```
 <br><br>
 

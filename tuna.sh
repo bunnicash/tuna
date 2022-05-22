@@ -39,7 +39,7 @@ aur_upgrade () {
 ## Input array, repository creation
 mkdir -p ~/AUR && echo " "
 array_main="$(echo $*)"
-if [[ $($array_main | wc -l) -le 2 ]]; then
+if [ -z "$array_main" ]; then
     array_main="-H"
 fi
 

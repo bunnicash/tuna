@@ -22,7 +22,8 @@ Tuna - An AUR helper written in Bash<br>
 <br>
 
 <p float="left">
-    <img src="https://i.imgur.com/OjIFLXc.png" />
+    <img src="https://i.imgur.com/q6DeZVN.png" />
+    <img src="https://i.imgur.com/3aawp90.png" />
 </p>
 <br>
 
@@ -41,7 +42,7 @@ Tuna - An AUR helper written in Bash<br>
 - Automatically remove empty/failed packages
 <br><br>
 
-### Syntax:
+### Usage and syntax:
 <b>tuna -Operation Targets</b><br>
 - Examples: <br>
 tuna -S xiccd duckstation-git librewolf-bin <br>
@@ -69,19 +70,13 @@ You can see which operations need "Targets" specified below <br><br>
 • Remove tuna                      -K
 </pre><br>
 
-### Using tuna
+### Installing tuna
 Start the setup process:
 ```
 sudo pacman -Sy git --noconfirm
 ```
 ```
 cd ~ && git clone https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *.sh && . setup.sh
-```
-<br>
-
-To use tuna:
-```
-tuna
 ```
 <br><br>
 

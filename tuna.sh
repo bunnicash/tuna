@@ -20,7 +20,7 @@ while getopts "S: P: U A R: X J I H L: D E G K" flag; do # "A" = no arguments, "
         E) ;;
         G) ;;
         K) ;;
-        \?) echo -e "e[93m==>\e[39m Error: Incorrect command syntax" && exit 0;;
+        \?) echo -e "e[93m==>\e[39m Error: Incorrect command syntax\n" && exit 0;;
     esac
 done
 
@@ -58,7 +58,7 @@ elif [ ${array_main[@]:0:3} == "-D" ]; then # Backup local AUR
     cd ~
     today=$(date +"%d-%m-%Y")
     tar -zcvf aur-backup-$today.tar.gz ./AUR
-    echo -e "\n\e[93m==>\e[39m Created tar.gz for local AUR repository backup\n"
+    echo -e "\n\e[93m==>\e[39m Created local AUR repository backup\n"
 
 elif [ ${array_main[@]:0:3} == "-E" ]; then # Restore local AUR backup
     aur_backup="/home/$USER/aur-backup-*.tar.gz"
@@ -66,8 +66,8 @@ elif [ ${array_main[@]:0:3} == "-E" ]; then # Restore local AUR backup
         rm -rf ~/AUR
         tar -xvf ~/aur-backup-*.tar.gz
         rm -rf ~/aur-backup-*.tar.gz
-        echo -e "\n\e[93m==>\e[39m Restored local backup, deleted leftover tar.gz"
-    else echo -e "\n\e[93m==>\e[39m Backup .tar.gz not found, aborting..."
+        echo -e "\n\e[93m==>\e[39m Restored local backup"
+    else echo -e "\n\e[93m==>\e[39m Error: Backup archive not found"
     fi
     cd ~ && echo " "
 
@@ -109,7 +109,7 @@ elif [ ${array_main[@]:0:3} == "-L" ]; then # Package Search
             done
         fi
     done
-    echo -e "\n\e[93m==>\e[39m Finished querying the AUR\n"
+    echo -e "\e[93m==>\e[39m Finished querying the AUR\n"
 
 elif [ ${array_main[@]:0:3} == "-R" ]; then # Uninstall packages
     cd ~/AUR
@@ -119,7 +119,7 @@ elif [ ${array_main[@]:0:3} == "-R" ]; then # Uninstall packages
             rm -rf ~/AUR/$str
         fi
     done
-    cd ~ && echo -e "\n\e[93m==>\e[39m Removed packages\n"
+    cd ~ && echo -e "\e[93m==>\e[39m Removed packages\n"
 
 elif [ ${array_main[@]:0:3} == "-J" ]; then # Remove empty/failed packages
     cd ~/AUR && ls > ~/tuna/broken.txt
@@ -127,13 +127,13 @@ elif [ ${array_main[@]:0:3} == "-J" ]; then # Remove empty/failed packages
         if [ ${#p} -ge 2 ]; then
             cd ~/AUR/$p
             if test -f PKGBUILD && test -f *.pkg.tar.zst; then
-                echo -e "\e[93m==>\e[39m Package $p is functional, skipping..."
+                echo -e "\e[93m==>\e[39m Package $p is functional"
             else rm -rf ~/AUR/$p && echo -e "\e[93m==>\e[39m Deleted empty/failed package $p"
             fi
         fi
         cd ~
     done <~/tuna/broken.txt
-    rm -rf ~/tuna/broken.txt && cd ~ && echo -e "\n\e[93m==>\e[39m Cleaned broken packages\n"
+    rm -rf ~/tuna/broken.txt && cd ~ && echo -e "\e[93m==>\e[39m Cleaned broken packages\n"
 
 elif [ ${array_main[@]:0:3} == "-X" ]; then # Uninstall all AUR packages
     cd ~/AUR && ls > ~/tuna/pkg.txt
@@ -143,7 +143,7 @@ elif [ ${array_main[@]:0:3} == "-X" ]; then # Uninstall all AUR packages
             rm -rf ~/AUR/$p
         fi
     done <~/tuna/pkg.txt
-    rm -rf ~/tuna/pkg.txt && cd ~ && echo -e "\n\e[93m==>\e[39m Removed all packages\n"
+    rm -rf ~/tuna/pkg.txt && cd ~ && echo -e "\e[93m==>\e[39m Removed all packages\n"
 
 elif [ ${array_main[@]:0:3} == "-P" ]; then # Pacman installing
     sudo pacman -Sy ${array_main[@]:3} --noconfirm --needed
@@ -182,7 +182,7 @@ elif [ ${array_main[@]:0:3} == "-U" ]; then # Sync and upgrade all repository/AU
             aur_upgrade
         fi
     done <~/tuna/pkg.txt
-    rm -rf ~/tuna/pkg.txt && cd ~ && echo " "
+    rm -rf ~/tuna/pkg.txt && cd ~ && echo -e "\e[93m==>\e[39m Upgraded the system entirely\n"
 
 elif [ ${array_main[@]:0:3} == "-A" ]; then # Sync and upgrade all AUR packages
     sudo pacman -Sy --noconfirm
@@ -192,5 +192,5 @@ elif [ ${array_main[@]:0:3} == "-A" ]; then # Sync and upgrade all AUR packages
             aur_upgrade
         fi
     done <~/tuna/pkg.txt
-    rm -rf ~/tuna/pkg.txt && cd ~ && echo " "
+    rm -rf ~/tuna/pkg.txt && cd ~ && echo -e "\e[93m==>\e[39m Upgraded all AUR packages\n"
 fi

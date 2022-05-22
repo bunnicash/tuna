@@ -22,7 +22,8 @@ Tuna - An AUR helper written in Bash<br>
 <br>
 
 <p float="left">
-    <img src="https://i.imgur.com/OjIFLXc.png" />
+    <img src="https://i.imgur.com/q6DeZVN.png" />
+    <img src="https://i.imgur.com/3aawp90.png" />
 </p>
 <br>
 
@@ -41,46 +42,41 @@ Tuna - An AUR helper written in Bash<br>
 - Automatically remove empty/failed packages
 <br><br>
 
-### Syntax:
+### Usage and syntax:
 <b>tuna -Operation Targets</b><br>
 - Examples: <br>
 tuna -S xiccd duckstation-git librewolf-bin <br>
 tuna -L xiccd librewolf duckstation <br>
-tuna -Re <br><br>
+tuna -J <br>
+tuna -U <br><br>
 - Note: <br>
 Not every operation needs targets, e.g packages specified <br>
 You can see which operations need "Targets" specified below <br><br>
 
 <pre><b>Operations</b>
 • Install AUR packages             -S      Targets
-• Install pacman packages          -O      Targets
-• Upgrade system (pacman/AUR)      -Syu
-• Upgrade system (AUR)             -Sya
+• Install pacman packages          -P      Targets
+• Upgrade system (pacman/AUR)      -U
+• Upgrade system (AUR)             -A
 • Uninstall certain AUR packages   -R      Targets
-• Uninstall all AUR packages       -Ra
-• Remove empty/failed packages     -Re
-• Detailed information             -Pa
+• Uninstall all AUR packages       -X
+• Remove empty/failed packages     -J
+• Detailed information             -I
 • Show helpful information         -H
 • Search for packages              -L      Targets
-• Create local AUR backup          -Bu
-• Restore local AUR from backup    -Br
-• Update tuna                      -Tu
-• Remove tuna                      -Tr
+• Create local AUR backup          -D
+• Restore local AUR from backup    -E
+• Update tuna                      -G
+• Remove tuna                      -K
 </pre><br>
 
-### Using tuna
+### Installing tuna
 Start the setup process:
 ```
 sudo pacman -Sy git --noconfirm
 ```
 ```
 cd ~ && git clone https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *.sh && . setup.sh
-```
-<br>
-
-To use tuna:
-```
-. tuna.sh
 ```
 <br><br>
 

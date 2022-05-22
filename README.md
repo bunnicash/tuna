@@ -49,9 +49,10 @@ tuna -S xiccd duckstation-git librewolf-bin <br>
 tuna -L xiccd librewolf duckstation <br>
 tuna -J <br>
 tuna -U <br><br>
-- Note: <br>
+- Notes: <br>
 Not every operation needs targets, e.g packages specified <br>
-You can see which operations need "Targets" specified below <br><br>
+You can see which operations need "Targets" specified below <br>
+Just calling the program by typing "tuna" will display the help menu <br><br>
 
 <pre><b>Operations</b>
 • Install AUR packages             -S      Targets
@@ -83,5 +84,5 @@ cd ~ && git clone https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *
 ### FAQ:
 - Is there an unstable branch for testing? Yes, you can use the testing branch: `git clone -b testing https://github.com/bunnicash/tuna.git` <br>
 
-- A package / certain packages I am trying to install won't install, what's happening? - Before opening an issue, please make sure the packages you want do not have any reported issues on https://aur.archlinux.org/, not all AUR packages are functional, that's not a tuna-problem.
+- A package / certain packages I am trying to install won't install, what's happening? - Before opening an issue, please make sure the packages you want do not have any reported issues on https://aur.archlinux.org/, not all AUR packages are functional, that's not an issue related to the AUR helper itself.
 <br><br>

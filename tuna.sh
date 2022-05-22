@@ -1,6 +1,6 @@
 #!/bin/bash
 ## Copyright (C) 2022 bunnicash "@bunnicash" and licensed under GPL-2.0
-version="v1.0-023"
+version="v1.0-024"
 source ~/tuna/config.tuna
 
 ## Get flags/args
@@ -20,7 +20,7 @@ while getopts "S: P: U A R: X J I H L: D E G K" flag; do # "A" = no arguments, "
         E) ;;
         G) ;;
         K) ;;
-        \?) echo -e "e[93m==>\e[39m Error: Incorrect command syntax\n" && exit 0;;
+        \?) echo -e "\e[93m==>\e[39m Error: Incorrect command syntax\n" && exit 0;;
     esac
 done
 
@@ -39,6 +39,9 @@ aur_upgrade () {
 ## Input array, repository creation
 mkdir -p ~/AUR && echo " "
 array_main="$(echo $*)"
+if [[ $($array_main | wc -l) -le 2 ]]; then
+    array_main="-H"
+fi
 
 ## Operations
 if [ ${array_main[@]:0:3} == "-S" ]; then # Install packages

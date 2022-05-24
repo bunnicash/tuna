@@ -2,4 +2,6 @@
 ## Copyright (C) 2022 bunnicash "@bunnicash" and licensed under GPL-2.0
 
 ## Tuna Configuration
-wait_tuna="2"
+wait_tuna="2"        # wait time on important output, in seconds
+git_branch="-b main" # usable branches, "-b main" | "-b testing"
+

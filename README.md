@@ -29,7 +29,7 @@ Tuna - An AUR helper written in Bash<br>
 
 ### Features:
 - Initial setup including dependency resolving for tuna/AUR
-- Automated AUR package installation for as many packages as needed in one command
+- Automated AUR package installation for as many packages as desired in one command
 - Full system upgrade (Pacman Repositories and AUR)
 - Partial system upgrade (AUR only)
 - Colorful PKGBUILD viewer/comparison pre-install/pre-upgrade
@@ -38,7 +38,7 @@ Tuna - An AUR helper written in Bash<br>
 - Local AUR repository management: backup and restore
 - Package search function including alternatives
 - Remove certain or all AUR packages in one command
-- Easy AUR-helper update process in a single command
+- Easy AUR-helper self-update process in a single command
 - Automatically remove empty/failed packages
 <br><br>
 
@@ -82,7 +82,7 @@ cd ~ && git clone https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *
 <br><br>
 
 ### FAQ:
-- Is there an unstable branch for testing? Yes, you can use the testing branch: `git clone -b testing https://github.com/bunnicash/tuna.git` <br>
+- Is there an unstable branch for testing? Yes, you can use the testing branch: `git clone -b testing https://github.com/bunnicash/tuna.git`. You can also switch to the testing branch if you have Tuna installed already: See `config.tuna`. <br>
 
 - A package / certain packages I am trying to install won't install, what's happening? - Before opening an issue, please make sure the packages you want do not have any reported issues on https://aur.archlinux.org/, not all AUR packages are functional, that's not an issue related to the AUR helper itself.
 <br><br>

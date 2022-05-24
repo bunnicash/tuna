@@ -1,6 +1,6 @@
 #!/bin/bash
 ## Copyright (C) 2022 bunnicash "@bunnicash" and licensed under GPL-2.0
-version="v1.0-024"
+version="v1.0-025"
 source ~/tuna/config.tuna
 
 ## Get flags/args
@@ -86,14 +86,13 @@ elif [ ${array_main[@]:0:3} == "-I" ]; then # Package info all
     du -sh -- * | sort -rh
     echo -e "\e[92m===============================================================\e[39m"
     echo -e "\e[93m==>\e[39m AUR Package versions:"
-    ls > ~/tuna/vers.txt
-    while read p; do
+    pkg_version=$(ls)
+    for p in $pkg_version; do
         if [ ${#p} -ge 2 ]; then
             cd ~/AUR/$p
             echo -e "$p, version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)"
         fi
-    done <~/tuna/vers.txt
-    rm -rf ~/tuna/vers.txt
+    done
     cd ~ && echo " "
 
 elif [ ${array_main[@]:0:3} == "-L" ]; then # Package Search
@@ -125,8 +124,9 @@ elif [ ${array_main[@]:0:3} == "-R" ]; then # Uninstall packages
     cd ~ && echo -e "\e[93m==>\e[39m Removed packages\n"
 
 elif [ ${array_main[@]:0:3} == "-J" ]; then # Remove empty/failed packages
-    cd ~/AUR && ls > ~/tuna/broken.txt
-    while read p; do
+    cd ~/AUR
+    pkg_broken=$(ls)
+    for p in $pkg_broken; do
         if [ ${#p} -ge 2 ]; then
             cd ~/AUR/$p
             if test -f PKGBUILD && test -f *.pkg.tar.zst; then
@@ -135,25 +135,22 @@ elif [ ${array_main[@]:0:3} == "-J" ]; then # Remove empty/failed packages
             fi
         fi
         cd ~
-    done <~/tuna/broken.txt
-    rm -rf ~/tuna/broken.txt && cd ~ && echo -e "\e[93m==>\e[39m Cleaned broken packages\n"
+    done
+    cd ~ && echo -e "\e[93m==>\e[39m Finished cleaning broken packages\n"
 
 elif [ ${array_main[@]:0:3} == "-X" ]; then # Uninstall all AUR packages
-    cd ~/AUR && ls > ~/tuna/pkg.txt
-    while read p; do
-        if [ ${#p} -ge 2 ]; then
-            sudo pacman -Rs $p --noconfirm
-            rm -rf ~/AUR/$p
-        fi
-    done <~/tuna/pkg.txt
-    rm -rf ~/tuna/pkg.txt && cd ~ && echo -e "\e[93m==>\e[39m Removed all packages\n"
+    cd ~/AUR
+    pkg_wipeall=$(ls)
+    sudo pacman -Rs $pkg_wipeall --noconfirm
+    cd ~ && rm -rf ~/AUR
+    echo -e "\e[93m==>\e[39m Removed all packages\n"
 
 elif [ ${array_main[@]:0:3} == "-P" ]; then # Pacman installing
     sudo pacman -Sy ${array_main[@]:3} --noconfirm --needed
 
 elif [ ${array_main[@]:0:3} == "-G" ]; then # Update tuna
     sudo rm -rf /usr/bin/tuna ~/tuna && cd ~
-    git clone https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *.sh && . setup.sh
+    git clone $git_branch https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *.sh && . setup.sh
 
 elif [ ${array_main[@]:0:3} == "-K" ]; then # Remove tuna
     sudo rm -rf /usr/bin/tuna ~/tuna && cd ~
@@ -179,21 +176,23 @@ elif [ ${array_main[@]:0:3} == "-H" ]; then # Helpful information
 
 elif [ ${array_main[@]:0:3} == "-U" ]; then # Sync and upgrade all repository/AUR packages
     sudo pacman -Syu --noconfirm
-    cd ~/AUR && ls > ~/tuna/pkg.txt
-    while read p; do
+    cd ~/AUR
+    pkg_upgrade=$(ls)
+    for p in $pkg_upgrade; do
         if [ ${#p} -ge 2 ]; then
             aur_upgrade
         fi
-    done <~/tuna/pkg.txt
-    rm -rf ~/tuna/pkg.txt && cd ~ && echo -e "\e[93m==>\e[39m Upgraded the system entirely\n"
+    done
+    cd ~ && echo -e "\e[93m==>\e[39m Upgraded the system entirely\n"
 
 elif [ ${array_main[@]:0:3} == "-A" ]; then # Sync and upgrade all AUR packages
     sudo pacman -Sy --noconfirm
-    cd ~/AUR && ls > ~/tuna/pkg.txt
-    while read p; do
+    cd ~/AUR
+    pkg_upgrade=$(ls)
+    for p in $pkg_upgrade; do
         if [ ${#p} -ge 2 ]; then
             aur_upgrade
         fi
-    done <~/tuna/pkg.txt
-    rm -rf ~/tuna/pkg.txt && cd ~ && echo -e "\e[93m==>\e[39m Upgraded all AUR packages\n"
+    done
+    cd ~ && echo -e "\e[93m==>\e[39m Upgraded all AUR packages\n"
 fi

@@ -32,7 +32,7 @@ aur_upgrade () {
     rm -rf $p && git clone https://aur.archlinux.org/$p.git && cd ~/AUR/$p && echo -e "\n\e[93m==>\e[39m New PKGBUILD for $p\n:"
     echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
     makepkg -csir --noconfirm --skippgpcheck
-    echo -e "\n\e[93m==>\e[39m Upgraded $p from version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' ~/tuna/PKGBUILD) to version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)"
+    echo -e "\n\e[93m==>\e[39m Upgraded $p from version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' ~/tuna/PKGBUILD) to version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)" && sleep $wait_tuna
     rm -rf ~/tuna/PKGBUILD && cd ~/AUR && echo -e "\n\e[92m===============================================================\e[39m\n"
 }
 
@@ -51,7 +51,7 @@ if [ ${array_main[@]:0:3} == "-S" ]; then # Install packages
                 rm -rf $str && git clone https://aur.archlinux.org/$str.git && cd ~/AUR/$str && echo -e "\n\e[93m==>\e[39m PKGBUILD for $str:\n"
                 echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
                 makepkg -csir --noconfirm --skippgpcheck
-                echo -e "\n\e[93m==>\e[39m Installed $str version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)"
+                echo -e "\n\e[93m==>\e[39m Installed $str version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)" && sleep $wait_tuna
                 cd ~/AUR && echo -e "\n\e[92m===============================================================\e[39m\n"
             fi
         done

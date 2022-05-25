@@ -1,10 +1,10 @@
 #!/bin/bash
 ## Copyright (C) 2022 bunnicash "@bunnicash" and licensed under GPL-2.0
-version="v1.0-025"
+version="v1.0-026"
 source ~/tuna/config.tuna
 
 ## Get flags/args
-while getopts "S: P: U A R: X J I H L: D E G K" flag; do # "A" = no arguments, "A:" needs arguments, flag is one letter ("bc" in "Abc" would be args for "A")
+while getopts "S: P: U A R: X J I H L: D E G K" flag; do # "A" = no args, "A:" needs args, singe-letter flags ("bc" in "Abc" would be args for "A")
     case "$flag" in 
         S) ;; # needs targets
         P) ;; # needs targets
@@ -20,7 +20,7 @@ while getopts "S: P: U A R: X J I H L: D E G K" flag; do # "A" = no arguments, "
         E) ;;
         G) ;;
         K) ;;
-        \?) echo -e "\e[93m==>\e[39m Error: Incorrect command syntax\n" && exit 0;;
+        \?) echo -e "\e[93m==>\e[39m Error: Incorrect command syntax\n" && exit 1;;
     esac
 done
 
@@ -29,7 +29,8 @@ aur_upgrade () {
     cd ~/AUR/$p && echo -e "\e[93m==>\e[39m Old PKGBUILD for $p:\n"
     echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
     mv PKGBUILD ~/tuna && cd ~/AUR
-    rm -rf $p && git clone https://aur.archlinux.org/$p.git && cd ~/AUR/$p && echo -e "\n\e[93m==>\e[39m New PKGBUILD for $p\n:"
+    rm -rf $p && git clone https://aur.archlinux.org/$p.git
+    cd ~/AUR/$p && echo -e "\n\e[93m==>\e[39m New PKGBUILD for $p\n:"
     echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
     makepkg -csir --noconfirm --skippgpcheck
     echo -e "\n\e[93m==>\e[39m Upgraded $p from version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' ~/tuna/PKGBUILD) to version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)" && sleep $wait_tuna
@@ -48,7 +49,8 @@ if [ ${array_main[@]:0:3} == "-S" ]; then # Install packages
         cd ~/AUR
         for str in ${array_main[@]:3}; do
             if [ ${#str} -ge 2 ]; then
-                rm -rf $str && git clone https://aur.archlinux.org/$str.git && cd ~/AUR/$str && echo -e "\n\e[93m==>\e[39m PKGBUILD for $str:\n"
+                rm -rf $str && git clone https://aur.archlinux.org/$str.git
+                cd ~/AUR/$str && echo -e "\n\e[93m==>\e[39m PKGBUILD for $str:\n"
                 echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
                 makepkg -csir --noconfirm --skippgpcheck
                 echo -e "\n\e[93m==>\e[39m Installed $str version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)" && sleep $wait_tuna
@@ -124,8 +126,7 @@ elif [ ${array_main[@]:0:3} == "-R" ]; then # Uninstall packages
     cd ~ && echo -e "\e[93m==>\e[39m Removed packages\n"
 
 elif [ ${array_main[@]:0:3} == "-J" ]; then # Remove empty/failed packages
-    cd ~/AUR
-    pkg_broken=$(ls)
+    pkg_broken=$(ls ~/AUR)
     for p in $pkg_broken; do
         if [ ${#p} -ge 2 ]; then
             cd ~/AUR/$p
@@ -136,13 +137,12 @@ elif [ ${array_main[@]:0:3} == "-J" ]; then # Remove empty/failed packages
         fi
         cd ~
     done
-    cd ~ && echo -e "\e[93m==>\e[39m Finished cleaning broken packages\n"
+    echo -e "\e[93m==>\e[39m Finished cleaning broken packages\n"
 
 elif [ ${array_main[@]:0:3} == "-X" ]; then # Uninstall all AUR packages
-    cd ~/AUR
-    pkg_wipeall=$(ls)
+    pkg_wipeall=$(ls ~/AUR)
     sudo pacman -Rs $pkg_wipeall --noconfirm
-    cd ~ && rm -rf ~/AUR
+    rm -rf ~/AUR
     echo -e "\e[93m==>\e[39m Removed all packages\n"
 
 elif [ ${array_main[@]:0:3} == "-P" ]; then # Pacman installing

@@ -21,8 +21,8 @@ Tuna - An AUR helper written in Bash<br>
 <br>
 
 <p float="left">
-    <img src="https://i.imgur.com/q6DeZVN.png" />
-    <img src="https://i.imgur.com/3aawp90.png" />
+    <img src="https://i.imgur.com/syYXtE2.png" />
+    <img src="https://i.imgur.com/YiNVjVJ.png" />
 </p>
 <br>
 

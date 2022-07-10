@@ -1,31 +1,14 @@
 #!/bin/bash
 ## Copyright (C) 2022 bunnicash "@bunnicash" and licensed under GPL-2.0
-version="v1.0-026"
+version="v1.0-027"
 source ~/tuna/config.tuna
 
-## Get flags/args
-while getopts "S: P: U A R: X J I H L: D E G K" flag; do # "A" = no args, "A:" needs args, singe-letter flags ("bc" in "Abc" would be args for "A")
-    case "$flag" in 
-        S) ;; # needs targets
-        P) ;; # needs targets
-        U) ;;
-        A) ;;
-        R) ;; # needs targets
-        X) ;;
-        J) ;;
-        I) ;;
-        H) ;;
-        L) ;; # needs targets
-        D) ;;
-        E) ;;
-        G) ;;
-        K) ;;
-        \?) echo -e "\e[93m==>\e[39m Error: Incorrect command syntax\n" && exit 1;;
-    esac
-done
+## Initialize Tuna
+mkdir -p ~/AUR
+array_main="$(echo $*)"
 
-## Functions
-aur_upgrade () {
+## Functions 
+aur_upgrade () {  # Upgrade shared core for U,A
     cd ~/AUR/$p && echo -e "\e[93m==>\e[39m Old PKGBUILD for $p:\n"
     echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
     mv PKGBUILD ~/tuna && cd ~/AUR
@@ -37,35 +20,53 @@ aur_upgrade () {
     rm -rf ~/tuna/PKGBUILD && cd ~/AUR && echo -e "\n\e[92m===============================================================\e[39m\n"
 }
 
-## Input array, repository creation
-mkdir -p ~/AUR && echo " "
-array_main="$(echo $*)"
-if [ -z "$array_main" ]; then
-    array_main="-H"
-fi
+tuna_U () {  # Complete system upgrade
+    sudo pacman -Syu --noconfirm
+    cd ~/AUR
+    pkg_upgrade=$(ls)
+    for p in $pkg_upgrade; do
+        if [ ${#p} -ge 2 ]; then
+            aur_upgrade
+        fi
+    done
+    cd ~ && echo -e "\e[93m==>\e[39m Upgraded the system entirely\n"
+}
 
-## Operations
-if [ ${array_main[@]:0:3} == "-S" ]; then # Install packages
-        cd ~/AUR
-        for str in ${array_main[@]:3}; do
-            if [ ${#str} -ge 2 ]; then
-                rm -rf $str && git clone https://aur.archlinux.org/$str.git
-                cd ~/AUR/$str && echo -e "\n\e[93m==>\e[39m PKGBUILD for $str:\n"
-                echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
-                makepkg -csir --noconfirm --skippgpcheck
-                echo -e "\n\e[93m==>\e[39m Installed $str version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)" && sleep $wait_tuna
-                cd ~/AUR && echo -e "\n\e[92m===============================================================\e[39m\n"
-            fi
-        done
-        cd ~
+tuna_A () {  # Complete AUR upgrade
+    sudo pacman -Sy --noconfirm
+    cd ~/AUR
+    pkg_upgrade=$(ls)
+    for p in $pkg_upgrade; do
+        if [ ${#p} -ge 2 ]; then
+            aur_upgrade
+        fi
+    done
+    cd ~ && echo -e "\e[93m==>\e[39m Upgraded all AUR packages\n"
+}
 
-elif [ ${array_main[@]:0:3} == "-D" ]; then # Backup local AUR
+tuna_S () {  # Install AUR packages
+    cd ~/AUR
+    for str in ${array_main[@]:2}; do
+        if [ ${#str} -ge 2 ]; then
+            rm -rf $str && git clone https://aur.archlinux.org/$str.git
+            cd ~/AUR/$str && echo -e "\n\e[93m==>\e[39m PKGBUILD for $str:\n"
+            echo -e "\e[95m " && cat PKGBUILD && echo -e "\e[39m " && echo -e "$(sleep $wait_tuna)\n"
+            makepkg -csir --noconfirm --skippgpcheck
+            echo -e "\n\e[93m==>\e[39m Installed $str version $(awk -n -F"pkgver=" '/pkgver=/{print $2}' PKGBUILD)" && sleep $wait_tuna
+            cd ~/AUR && echo -e "\n\e[92m===============================================================\e[39m\n"
+        fi
+    done
+    cd ~
+}
+
+tuna_D () {  # Create AUR repository backup 
     cd ~
     today=$(date +"%d-%m-%Y")
     tar -zcvf aur-backup-$today.tar.gz ./AUR
     echo -e "\n\e[93m==>\e[39m Created local AUR repository backup\n"
+}
 
-elif [ ${array_main[@]:0:3} == "-E" ]; then # Restore local AUR backup
+tuna_E () {  # Restore AUR repository backup 
     aur_backup="/home/$USER/aur-backup-*.tar.gz"
     if test -f $aur_backup; then
         rm -rf ~/AUR
@@ -75,8 +76,9 @@ elif [ ${array_main[@]:0:3} == "-E" ]; then # Restore local AUR backup
     else echo -e "\n\e[93m==>\e[39m Error: Backup archive not found"
     fi
     cd ~ && echo " "
+}
 
-elif [ ${array_main[@]:0:3} == "-I" ]; then # Package info all
+tuna_I () {  # AUR repository information 
     cd ~/AUR
     echo -e "\e[93m==>\e[39m tuna $version"
     echo -e "\e[92m===============================================================\e[39m"
@@ -96,12 +98,13 @@ elif [ ${array_main[@]:0:3} == "-I" ]; then # Package info all
         fi
     done
     cd ~ && echo " "
+}
 
-elif [ ${array_main[@]:0:3} == "-L" ]; then # Package Search
+tuna_L () {  # Package lookup / query
     echo -e "\e[93m==>\e[39m Matches and suggestions:"
     echo -e "\e[92m===============================================================\e[39m"
     array_look=(".git" "-bin.git" "-git.git" "-base.git" "-dkms.git" "-beta.git" "-cli.git")
-    for str in ${array_main[@]:3}; do
+    for str in ${array_main[@]:2}; do
         if [[ $(pacman -Ss $str | wc -c) -ge 1 ]]; then
             echo -e "\e[93m==>\e[39m Found packages named $str in pacman repositories"
         fi
@@ -114,18 +117,20 @@ elif [ ${array_main[@]:0:3} == "-L" ]; then # Package Search
         fi
     done
     echo -e "\e[93m==>\e[39m Finished querying the AUR\n"
+}
 
-elif [ ${array_main[@]:0:3} == "-R" ]; then # Uninstall packages
+tuna_R () {  # Remove selected AUR packages
     cd ~/AUR
-    for str in ${array_main[@]:3}; do
+    for str in ${array_main[@]:2}; do
         if [ ${#str} -ge 2 ]; then
             sudo pacman -Rs $str --noconfirm
             rm -rf ~/AUR/$str
         fi
     done
     cd ~ && echo -e "\e[93m==>\e[39m Removed packages\n"
+}
 
-elif [ ${array_main[@]:0:3} == "-J" ]; then # Remove empty/failed packages
+tuna_J () {  # Remove broken packages
     pkg_broken=$(ls ~/AUR)
     for p in $pkg_broken; do
         if [ ${#p} -ge 2 ]; then
@@ -138,24 +143,29 @@ elif [ ${array_main[@]:0:3} == "-J" ]; then # Remove empty/failed packages
         cd ~
     done
     echo -e "\e[93m==>\e[39m Finished cleaning broken packages\n"
+}
 
-elif [ ${array_main[@]:0:3} == "-X" ]; then # Uninstall all AUR packages
+tuna_X () {  # Remove all AUR packages
     pkg_wipeall=$(ls ~/AUR)
     sudo pacman -Rs $pkg_wipeall --noconfirm
     rm -rf ~/AUR
     echo -e "\e[93m==>\e[39m Removed all packages\n"
+}
 
-elif [ ${array_main[@]:0:3} == "-P" ]; then # Pacman installing
-    sudo pacman -Sy ${array_main[@]:3} --noconfirm --needed
+tuna_P () {  # Pacman installation
+    sudo pacman -Sy ${array_main[@]:2} --noconfirm --needed
+}
 
-elif [ ${array_main[@]:0:3} == "-G" ]; then # Update tuna
+tuna_G () {  # Update tuna
     sudo rm -rf /usr/bin/tuna ~/tuna && cd ~
     git clone $git_branch https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *.sh && . setup.sh
+}
 
-elif [ ${array_main[@]:0:3} == "-K" ]; then # Remove tuna
+tuna_K () {  # Uninstall tuna
     sudo rm -rf /usr/bin/tuna ~/tuna && cd ~
+}
 
-elif [ ${array_main[@]:0:3} == "-H" ]; then # Helpful information
+tuna_H () {  # Help menu
     echo -ne "\e[93m==>\e[39m Syntax: tuna <-Operation> <Targets>
 \e[92m===============================================================\e[39m
 \e[93m==>\e[39m -S      Install AUR packages
@@ -173,26 +183,28 @@ elif [ ${array_main[@]:0:3} == "-H" ]; then # Helpful information
 \e[93m==>\e[39m -K      Remove tuna
 
 "
+}
 
-elif [ ${array_main[@]:0:3} == "-U" ]; then # Sync and upgrade all repository/AUR packages
-    sudo pacman -Syu --noconfirm
-    cd ~/AUR
-    pkg_upgrade=$(ls)
-    for p in $pkg_upgrade; do
-        if [ ${#p} -ge 2 ]; then
-            aur_upgrade
-        fi
-    done
-    cd ~ && echo -e "\e[93m==>\e[39m Upgraded the system entirely\n"
-
-elif [ ${array_main[@]:0:3} == "-A" ]; then # Sync and upgrade all AUR packages
-    sudo pacman -Sy --noconfirm
-    cd ~/AUR
-    pkg_upgrade=$(ls)
-    for p in $pkg_upgrade; do
-        if [ ${#p} -ge 2 ]; then
-            aur_upgrade
-        fi
-    done
-    cd ~ && echo -e "\e[93m==>\e[39m Upgraded all AUR packages\n"
+## CLI: Flags, Targets/Args
+while getopts "S: P: U A R: X J I H L: D E G K" flag; do  # "A" = no args, "A:" needs args
+    case "$flag" in  
+        S) tuna_S ;;  # needs targets
+        P) tuna_P ;;  # needs targets
+        U) tuna_U ;;
+        A) tuna_A ;;
+        R) tuna_R ;;  # needs targets
+        X) tuna_X ;;
+        J) tuna_J ;;
+        I) tuna_I ;;
+        H) tuna_H ;;
+        L) tuna_L ;;  # needs targets
+        D) tuna_D ;;
+        E) tuna_E ;;
+        G) tuna_G ;;
+        K) tuna_K ;;
+        \?) echo -e "\e[93m==>\e[39m Error: Incorrect command syntax\n" && exit 1;;
+    esac
+done
+if [ -z "$*" ]; then
+    tuna_H
 fi

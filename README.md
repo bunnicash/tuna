@@ -2,7 +2,6 @@
 Tuna - An AUR helper written in Bash<br>
 
 <p>
-</a>
     <a href="https://github.com/bunnicash/tuna">
         <img src="https://img.shields.io/github/stars/bunnicash/tuna?style=flat-square">
     </a>
@@ -84,5 +83,7 @@ cd ~ && git clone https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *
 ### FAQ:
 - Is there an unstable branch for testing? Yes, you can use the testing branch: `git clone -b testing https://github.com/bunnicash/tuna.git`. You can also switch to the testing branch if you have Tuna installed already: See `config.tuna`. <br>
 
-- A package / certain packages I am trying to install won't install, what's happening? - Before opening an issue, please make sure the packages you want do not have any reported issues on https://aur.archlinux.org/, not all AUR packages are functional, that's not an issue related to the AUR helper itself.
+- A package / certain packages I am trying to install won't install, what's happening? - Before opening an issue, please make sure the packages you want do not have any reported issues on https://aur.archlinux.org/, not all AUR packages are functional, that's not an issue related to the AUR helper itself. <br>
+
+- Why does my package with AUR dependencies fail? - As of now, tuna does not have AUR-dependency management, simply add them to the command, e.g `tuna -S AUR-dep1 AUR-dep2 AUR-program`. 
 <br><br>

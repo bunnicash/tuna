@@ -1,6 +1,6 @@
 #!/bin/bash
 ## Copyright (C) 2022 bunnicash "@bunnicash" and licensed under GPL-2.0
-version="v1.0-027"
+version="v1.0-028"
 source ~/tuna/config.tuna
 
 ## Initialize Tuna
@@ -156,15 +156,6 @@ tuna_P () {  # Pacman installation
     sudo pacman -Sy ${array_main[@]:2} --noconfirm --needed
 }
 
-tuna_G () {  # Update tuna
-    sudo rm -rf /usr/bin/tuna ~/tuna && cd ~
-    git clone $git_branch https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *.sh && . setup.sh
-}
-
-tuna_K () {  # Uninstall tuna
-    sudo rm -rf /usr/bin/tuna ~/tuna && cd ~
-}
-
 tuna_H () {  # Help menu
     echo -ne "\e[93m==>\e[39m Syntax: tuna <-Operation> <Targets>
 \e[92m===============================================================\e[39m
@@ -179,10 +170,13 @@ tuna_H () {  # Help menu
 \e[93m==>\e[39m -L      Package search including alternatives
 \e[93m==>\e[39m -D      Create local AUR backup
 \e[93m==>\e[39m -E      Restore local AUR from backup
-\e[93m==>\e[39m -G      Update tuna
-\e[93m==>\e[39m -K      Remove tuna
 
 "
+}
+
+tuna_syntaxerr () {
+    echo -e "\e[93m==>\e[39m Error: Incorrect command syntax\n"
+    exit 1
 }
 
 ## CLI: Flags, Targets/Args
@@ -202,7 +196,7 @@ while getopts "S: P: U A R: X J I H L: D E G K" flag; do  # "A" = no args, "A:" 
         E) tuna_E ;;
         G) tuna_G ;;
         K) tuna_K ;;
-        \?) echo -e "\e[93m==>\e[39m Error: Incorrect command syntax\n" && exit 1;;
+        \?) tuna_syntaxerr ;;
     esac
 done
 if [ -z "$*" ]; then

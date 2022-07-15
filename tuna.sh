@@ -180,7 +180,7 @@ tuna_syntaxerr () {
 }
 
 ## CLI: Flags, Targets/Args
-while getopts "S: P: U A R: X J I H L: D E G K" flag; do  # "A" = no args, "A:" needs args
+while getopts "S: P: U A R: X J I H L: D E" flag; do  # "A" = no args, "A:" needs args
     case "$flag" in  
         S) tuna_S ;;  # needs targets
         P) tuna_P ;;  # needs targets
@@ -194,8 +194,6 @@ while getopts "S: P: U A R: X J I H L: D E G K" flag; do  # "A" = no args, "A:" 
         L) tuna_L ;;  # needs targets
         D) tuna_D ;;
         E) tuna_E ;;
-        G) tuna_G ;;
-        K) tuna_K ;;
         \?) tuna_syntaxerr ;;
     esac
 done

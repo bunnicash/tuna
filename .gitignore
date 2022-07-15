@@ -3,10 +3,7 @@
 /Modules/
 /.vscode/
 
-# General
+# Files
 *.txt
 *.log
 *-test.sh
-
-# Specific
-test.sh

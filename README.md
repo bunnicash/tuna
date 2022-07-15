@@ -1,5 +1,5 @@
 # tuna
-Tuna - An AUR helper written in Bash<br>
+Tuna - An AUR helper written in Bash <br>
 
 <p>
     <a href="https://github.com/bunnicash/tuna">
@@ -37,7 +37,6 @@ Tuna - An AUR helper written in Bash<br>
 - Local AUR repository management: backup and restore
 - Package search function including alternatives
 - Remove certain or all AUR packages in one command
-- Easy AUR-helper self-update process in a single command
 - Automatically remove empty/failed packages
 <br><br>
 
@@ -66,24 +65,23 @@ Just calling the program by typing "tuna" will display the help menu <br><br>
 • Search for packages              -L      Targets
 • Create local AUR backup          -D
 • Restore local AUR from backup    -E
-• Update tuna                      -G
-• Remove tuna                      -K
 </pre><br>
 
 ### Installing tuna
-Start the setup process:
+To install the latest version:
 ```
-sudo pacman -Sy git --noconfirm
+sudo pacman -Sy git --noconfirm --needed
 ```
 ```
-cd ~ && git clone https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *.sh && . setup.sh
+cd ~ && git clone https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *.sh && sudo cp -f tuna.sh /usr/bin/tuna
 ```
-<br><br>
+<br>
 
 ### FAQ:
-- Is there an unstable branch for testing? Yes, you can use the testing branch: `git clone -b testing https://github.com/bunnicash/tuna.git`. You can also switch to the testing branch if you have Tuna installed already: See `config.tuna`. <br>
+- Is there an unstable branch for testing? Yes, you can use the testing branch: `git clone -b testing https://github.com/bunnicash/tuna.git`. <br>
 
 - A package / certain packages I am trying to install won't install, what's happening? - Before opening an issue, please make sure the packages you want do not have any reported issues on https://aur.archlinux.org/, not all AUR packages are functional, that's not an issue related to the AUR helper itself. <br>
 
-- Why does my package with AUR dependencies fail? - As of now, tuna does not have AUR-dependency management, simply add them to the command, e.g `tuna -S AUR-dep1 AUR-dep2 AUR-program`. 
-<br><br>
+- Why does my package with AUR dependencies fail? - As of now, tuna does not have AUR-dependency management, simply add them to the command, e.g `tuna -S AUR-dep1 AUR-dep2 AUR-program`. <br>
+
+- I want to delete tuna entirely! - To do so, enter: `sudo rm -rf /usr/bin/tuna ~/tuna` <br><br>

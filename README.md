@@ -43,14 +43,14 @@ Tuna - An AUR helper written in Bash <br>
 ### Usage and syntax:
 <b>tuna -Operation Targets</b><br>
 - Examples: <br>
-tuna -S xiccd duckstation-git librewolf-bin <br>
-tuna -L xiccd librewolf duckstation <br>
-tuna -J <br>
-tuna -U <br><br>
+`tuna -S xiccd duckstation-git librewolf-bin` <br>
+`tuna -L xiccd librewolf duckstation` <br>
+`tuna -J` <br>
+`tuna -U` <br><br>
 - Notes: <br>
 Not every operation needs targets, e.g packages specified <br>
 You can see which operations need "Targets" specified below <br>
-Just calling the program by typing "tuna" will display the help menu <br><br>
+Just calling the program by typing `tuna` will display the help menu <br><br>
 
 <pre><b>Operations</b>
 • Install AUR packages             -S      Targets
@@ -84,4 +84,4 @@ cd ~ && git clone https://github.com/bunnicash/tuna.git && cd tuna && chmod +x *
 
 - Why does my package with AUR dependencies fail? - As of now, tuna does not have AUR-dependency management, simply add them to the command, e.g `tuna -S AUR-dep1 AUR-dep2 AUR-program`. <br>
 
-- I want to delete tuna entirely! - To do so, enter: `sudo rm -rf /usr/bin/tuna ~/tuna` <br><br>
+- I want to delete tuna entirely! - To do so, enter: `sudo rm -rf /usr/bin/tuna ~/tuna`. To truly remove everything related to the AUR, type `tuna -X` before actually removing the program itself as this will also uninstall every AUR package instead of just removing the local AUR cache. <br><br>
